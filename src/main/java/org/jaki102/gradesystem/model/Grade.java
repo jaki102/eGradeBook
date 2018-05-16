@@ -31,18 +31,18 @@ public class Grade {
     @XmlTransient
     private int studentIndex;
 
-    @Id
+/*    @Id
     @XmlJavaTypeAdapter(ObjectIdJaxbAdapter.class)
-    private ObjectId _id;
+    private ObjectId _id;*/
 
-    private long id;
+    private int id;
   //  private static long inc = 1;
     private float value;
 
   //  @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd", timezone="CET")
     private Date date;
 
-    @Reference
+    @Embedded
     private Course course;
 
    // private static AtomicLong counter = new AtomicLong(100);
@@ -69,42 +69,45 @@ public class Grade {
         return studentIndex;
     }
 
-    @XmlElement
-    public long getId(){
+    public int getId(){
         return this.id;
     }
 
-    @XmlElement
     public float getValue() {
         return this.value;
     }
 
-    @XmlElement
     public Date getDate() {
         return this.date;
     }
 
-    @XmlElement
     public Course getCourse() { return this.course; }
 
-    @XmlTransient
+/*    @XmlTransient
     public ObjectId get_id() {
-        return  _id;
+        return _id;
+    }*/
+public static int getIdNumber() {
+    return idNumber;
+}
+
+    public static void setIdNumber(int idNumber) {
+        Grade.idNumber = idNumber;
     }
 
     public void setStudentIndex(int studentIndex) {
         this.studentIndex = studentIndex;
     }
 
-    public void set_id(ObjectId  _id) {
+/*    public void set_id(ObjectId _id) {
         this._id = _id;
-    }
+    }*/
 
 /*    public void setId(){
         this.id = inc++;
     }*/
 
-    public void setId(long id){
+    public void setId(int id){
         this.id = id;
     }
 

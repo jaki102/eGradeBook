@@ -123,6 +123,7 @@ public class MyResource {
     @Path("/students/{index}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response updateStudent(Student student, @PathParam("index") int index) {
+
         // getting student by it's index
         StudentsService studentService = new StudentsService();
         Student searchedStudent = studentService.getStudent(index);
@@ -142,6 +143,7 @@ public class MyResource {
             }
         }
 
+        student.setIndex(index);
         // updating student
         boolean status = studentService.updateStudent(student, false);
         String result = "Student " + student + " updated!";

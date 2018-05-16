@@ -9,8 +9,6 @@ import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Indexed;
-
-import javax.validation.constraints.NotNull;
 import javax.ws.rs.core.Link;
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -26,7 +24,8 @@ public class Student {
 
     @Id
     @XmlTransient
-    private ObjectId ID;
+    @XmlJavaTypeAdapter(ObjectIdJaxbAdapter.class)
+    private ObjectId _id;
 
     @Indexed(name = "index", unique = true)
     private int index;
@@ -86,24 +85,27 @@ public class Student {
         return this.birthday;
     }
 
-    @XmlElement(name = "grade")
+/*    @XmlElement(name = "grade")
     @XmlElementWrapper(name = "grades")
-    @JsonProperty("grades")
+    @JsonProperty("grades")*/
     public List<Grade> getGrades(){
         return this.grades;
     }
 
     @XmlTransient
-    public ObjectId getID() {
-        return ID;
+    public ObjectId get_id() {
+        return _id;
     }
 
-    public void setID(ObjectId ID) {
-        this.ID = ID;
+    public void set_id(ObjectId _id) {
+        this._id = _id;
     }
 
     public void setIndex(int index){
         this.index = index;
+        for(Grade g: grades){
+            g.setStudentIndex(index);
+        }
     }
 
 /*
@@ -136,7 +138,7 @@ public class Student {
         getGrades().add(grade);
     }
 
-    public Grade getGradeById(long id) {
+    public Grade getGradeById(int id) {
         Optional<Grade> grade = getGrades().stream().filter(c -> c.getId() == id).findFirst();
         return grade.orElse(null);
     }
@@ -150,7 +152,7 @@ public class Student {
             return false;
     }
 
-    public boolean removeStudentGradeById(long id) {
+    public boolean removeStudentGradeById(int id) {
         System.out.println("Removing: " + id);
         return getGrades().remove(getGradeById(id));
     }

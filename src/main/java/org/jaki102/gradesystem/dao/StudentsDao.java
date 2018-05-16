@@ -11,20 +11,20 @@ import java.util.List;
 public class StudentsDao {
     Datastore datastore = DatastoreHandler.getInstance().getDatastore();
 
-    public Student getStudents(Integer index){
+    public Student getStudents(int index){
         return datastore.createQuery(Student.class).field("index").equal(index).get();
     }
 
     public boolean updateStudent(Student updateObject){
         final Query<Student> studentToUpdate = datastore.createQuery(Student.class).field("index").equal(updateObject.getIndex());
         final UpdateOperations<Student> updateOperations = datastore.createUpdateOperations(Student.class)
+                .set("index", updateObject.getIndex())
                 .set("firstName", updateObject.getFirstName())
                 .set("lastName", updateObject.getLastName())
                 .set("birthday", updateObject.getBirthday());
         if(updateObject.getGrades() != null && !updateObject.getGrades().isEmpty())
             updateOperations.set("grades", updateObject.getGrades());
         datastore.update(studentToUpdate, updateOperations);
-        // TODO - check if succeeded
         return true;
     }
 
@@ -37,13 +37,13 @@ public class StudentsDao {
     public boolean updateStudent(Student updateObject, boolean force) {
         final Query<Student> studentToUpdate = datastore.createQuery(Student.class).field("index").equal(updateObject.getIndex());
         final UpdateOperations<Student> updateOperations = datastore.createUpdateOperations(Student.class)
+                .set("index", updateObject.getIndex())
                 .set("firstName", updateObject.getFirstName())
                 .set("lastName", updateObject.getLastName())
                 .set("birthday", updateObject.getBirthday());
         if(force == true)
             updateOperations.set("grades", updateObject.getGrades());
         datastore.update(studentToUpdate, updateOperations);
-        // TODO - check if succeeded
         return true;
     }
 
