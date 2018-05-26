@@ -6,6 +6,7 @@ import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.UpdateOperations;
 
+import java.util.Date;
 import java.util.List;
 
 public class StudentsDao {
@@ -45,6 +46,23 @@ public class StudentsDao {
             updateOperations.set("grades", updateObject.getGrades());
         datastore.update(studentToUpdate, updateOperations);
         return true;
+    }
+    public List<Student> getStudentsByFilters(String firstName, String lastName, Date birthday, String dateRelation) {
+        final Query<Student> query = datastore.createQuery(Student.class);
+        if(firstName != null)
+            query.field("firstName").containsIgnoreCase(firstName);
+        if(lastName != null)
+            query.field("lastName").containsIgnoreCase(lastName);
+        if(birthday != null && dateRelation != null) {
+            if(dateRelation.equals("equal"))
+                query.field("birthday").equal(birthday);
+            else if(dateRelation.equals("grater"))
+                query.field("birthday").greaterThan(birthday);
+            else if(dateRelation.equals("lower"))
+                query.field("birthday").lessThan(birthday);
+        }
+        List<Student> filteredStudents = query.asList();
+        return filteredStudents;
     }
 
     public Student create(Student student) {

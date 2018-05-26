@@ -23,9 +23,7 @@ public class CoursesDao {
         final UpdateOperations<Course> updateOperations = datastore.createUpdateOperations(Course.class)
                 .set("name", updateObject.getName())
                 .set("lecturer", updateObject.getLecturer());
-
         datastore.update(courseToUpdate, updateOperations);
-        // TODO - check if succeeded
         return true;
     }
 
@@ -38,6 +36,18 @@ public class CoursesDao {
     public Course readByParameters(String name, String lecturer) {
         return datastore.createQuery(Course.class).field("name").equal(name)
                 .field("lecturer").equal(lecturer).get();
+    }
+
+    public Course readByParameters(Integer id) {
+        return datastore.createQuery(Course.class).field("id").equal(id).get();
+    }
+
+    public List<Course> getByLecturer(String lecturer) {
+        final Query<Course> query = datastore.createQuery(Course.class);
+        if (lecturer != null)
+            query.field("lecturer").containsIgnoreCase(lecturer);
+        List<Course> courses = query.asList();
+        return courses;
     }
 
     public Course create(Course course) {

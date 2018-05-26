@@ -5,29 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
-        article:target{
-            display: block;
-        }
-        article{
-            display: none;
-        }
-        input{
-            width:97%;
-        }
+
 
     </style>
 </head>
 <body>
     <div id="wrapper">
         <header>
-            <figure>
-                    <img src="png/student.png" alt="Logo" style="width:8%;">
-                    <h1>eGradeBook</h1>
-            </figure>
+            <div class="main"></div>
+            <div class="main2"></div>
+            <div class ="logo">
+            <h1><i class="fa fa-graduation-cap" aria-hidden="true"></i><p>e</p>GradeBook</h1>
+             </div>
+             <div class="main3"></div>
+             <div class="main4"></div>
         </header>
-        <div>
-            <nav>
+        <div id= "content">
+            <nav id = "nav">
                 <ul>
                     <li><a href = "#students">Manage studens</a></li>
                     <li><a href = "#courses">Manage courses</a></li>
@@ -38,14 +35,14 @@
                 <form>          
                     <table>
                         <tr>
-                            <th><input type="number" name="index" placeholder = "Index"></th>
+                            <th><input type="number" name="index" placeholder = "Index" min="0"></th>
                             <th><input type="text" name="firstName" placeholder = "First name"></th>
                             <th><input type="text" name="lastName" placeholder = "Last name"> </th>
                             <th><input type="text" name="birthday" placeholder="Birthday" onfocus="(this.type='date')" onblur="(this.type='text')"></th>
                             <th><input type="text" name="action" value="Action" readonly></th>           
                         </tr>
                         <tr>
-                            <td><input type="number" name="index" value="122305" readonly></td>
+                            <td><input type="number" name="index" value="122305" min="0" readonly></td>
                             <td><input type="text" name="firstName" value="Jakub"></td>
                             <td><input type="text" name="ilastName" value="Białek"></td>
                             <td><input type="text" name="birthday" onfocus="(this.type='date')" onblur="(this.type='text')" value="1995-05-17"></td> 
@@ -56,7 +53,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td><input type="number" name="index" value="122333" readonly></td>
+                            <td><input type="number" name="index" value="122333" min="0" readonly></td>
                             <td><input type="text" name="firstName" value="Thor"></td>
                             <td><input type="text" name="ilastName" value="Odinson"></td>
                             <td><input type="text" name="birthday" onfocus="(this.type='date')" onblur="(this.type='text')" value="1105-07-21"></td>
@@ -67,7 +64,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td><input type="number" name="index" value="113245" readonly></td>
+                            <td><input type="number" name="index" value="113245" min="0" readonly></td>
                             <td><input type="text" name="firstName" value="Tony"></td>
                             <td><input type="text" name="ilastName" value="Stark"></td>
                             <td><input type="text" name="birthday" onfocus="(this.type='date')" onblur="(this.type='text')" value="1965-04-28"></td>
@@ -78,7 +75,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td><input type="number" name="index" placeholder="Index" required></td>
+                            <td><input type="number" name="index" placeholder="Index" min="0" required></td>
                             <td><input type="text" name="firstName" placeholder="First name" required></td>
                             <td><input type="text" name="ilastName" placeholder="Last name" required></td>
                             <td><input type="text" name="birthday" placeholder="Birthday" onfocus="(this.type='date')" onblur="(this.type='text')" required></td>
@@ -87,7 +84,7 @@
                             </td>
                         </tr> 
                     </table>
-                </form> 
+                </form>
             </article>
             <article id = "courses">
                 <h2>List of courses</h2>
@@ -200,8 +197,10 @@
             </article>
         </div>
         <footer>
-            <p>eGradeBook created by Jakub Białek</p>
-            <p> &copy; Copyrights 2018</p>
+            <div class = "footInside">
+                <p>eGradeBook created by Jakub Białek</p>
+                <p> &copy; Copyrights 2018</p>
+            </div>
         </footer>
     </div>
 </body>

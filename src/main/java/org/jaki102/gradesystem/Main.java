@@ -26,6 +26,7 @@ public class Main {
                 .packages("org.jaki102.gradesystem")
                 .packages("org.glassfish.jersey.examples.linking")
                 .register(DeclarativeLinkingFeature.class)
+                .register(DateParamConverterProvider.class)
                 .register(RestError.class);
 
         // create and start a new instance of grizzly http server

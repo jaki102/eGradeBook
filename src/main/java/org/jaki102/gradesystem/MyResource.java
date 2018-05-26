@@ -32,46 +32,13 @@ public class MyResource {
     @GET
     @Path("/students")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response getAllStudents(@QueryParam("firstName") String firstName,
-                                   @QueryParam("lastName") String lastName,
-                                   @QueryParam("date") Date date,
-                                   @QueryParam("dateRelation") String dateRelation) {
+    public Response getAllStudents(@QueryParam("firstName") String firstName, @QueryParam("lastName") String lastName, @QueryParam("birthday") Date birthday, @QueryParam("dateRelation") String dateRelation) {
         StudentsService studentService = new StudentsService();
-        List<Student> students = studentService.getAllStudents();
-
-        // checking if student list is empty
-        if (students == null || students.size() == 0)
-            return Response.status(Response.Status.NOT_FOUND).entity("No students").build();
-
-        // filtering by firstName
-        if (firstName != null) {
-            students = students.stream().filter(st -> st.getFirstName().equals(firstName)).collect(Collectors.toList());
-        }
-
-        // filtering by lastName
-        if (lastName != null) {
-            students = students.stream().filter(st -> st.getLastName().equals(lastName)).collect(Collectors.toList());
-        }
-
-        // filtering by date
-        if (date != null && dateRelation != null) {
-            switch (dateRelation.toLowerCase()) {
-                case "equal":
-                    students = students.stream().filter(st -> st.getBirthday().equals(date)).collect(Collectors.toList());
-                    break;
-                case "after":
-                    students = students.stream().filter(st -> st.getBirthday().after(date)).collect(Collectors.toList());
-                    break;
-                case "before":
-                    students = students.stream().filter(st -> st.getBirthday().before(date)).collect(Collectors.toList());
-                    break;
-            }
-        }
+        List<Student> students = studentService.getStudentsByFilters(firstName, lastName, birthday, dateRelation);
 
         GenericEntity<List<Student>> entity = new GenericEntity<List<Student>>(Lists.newArrayList(students)) {
         };
 
-        // creating response
         return Response.status(Response.Status.OK).entity(entity).build();
     }
 
@@ -203,16 +170,13 @@ public class MyResource {
         if (value != null && valueRelation != null) {
             switch (valueRelation.toLowerCase()) {
                 case "grater":
-                    // TODO - is String for value needed, maybe Float?
                     grades = grades.stream().filter(gr -> gr.getValue() > Float.valueOf(value).floatValue()).collect(Collectors.toList());
                     break;
                 case "lower":
-                    // TODO - is String for value needed, maybe Float?
                     grades = grades.stream().filter(gr -> gr.getValue() < Float.valueOf(value).floatValue()).collect(Collectors.toList());
                     break;
             }
         }
-
         // creating list of student's grades
         GenericEntity<List<Grade>> entity = new GenericEntity<List<Grade>>(Lists.newArrayList(grades)) {
         };
@@ -260,7 +224,7 @@ public class MyResource {
                 return Response.status(Response.Status.NOT_FOUND).entity("Student not found").build();
 
             CourseService courseService = new CourseService();
-            Course searchedCourse = courseService.getCourseByParameters(grade.getCourse().getName(), grade.getCourse().getLecturer());
+            Course searchedCourse = courseService.getCourseById(grade.getCourse().getId());
 
             if (searchedCourse == null)
                 return Response.status(Response.Status.NOT_FOUND).entity("Grade's course not found").build();
@@ -354,20 +318,10 @@ public class MyResource {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response getAllCourses(@QueryParam("lecturer") String lecturer) {
         CourseService courseService = new CourseService();
-        List<Course> courses = courseService.getAllCourses();
-
-//        // checking if courses list is empty
-//        if (courses == null || courses.size() == 0)
-//            return Response.status(Response.Status.NOT_FOUND).entity("No courses").build();
-
-        // filtering by lecturer name
-        if (lecturer != null) {
-            courses = courses.stream().filter(cr -> cr.getLecturer().equals(lecturer)).collect(Collectors.toList());
-        }
+        List<Course> courses = courseService.getCoursesByLecturerFilter(lecturer);
 
         GenericEntity<List<Course>> entity = new GenericEntity<List<Course>>(Lists.newArrayList(courses)) {
         };
-        // creating xml response
         return Response.status(Response.Status.OK).entity(entity).build();
     }
 
@@ -469,195 +423,3 @@ public class MyResource {
             return Response.status(Response.Status.CONFLICT).entity("Error, not deleted").build();
     }
    }
-  /*  @GET
-    @Path("/students/{index}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Object getStudent(@PathParam("index") long index) {
-        for (Student student : studentsList) {
-            if (student.getIndex() == index)
-                return student;
-        }
-        return Response.status(Response.Status.NOT_FOUND).build();
-    }
-
-    @GET
-    @Path("/students/{index}/grades")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Grade> getStudentGrades(@PathParam("index") long index) {
-        for (Student student : studentsList) {
-            if (student.getIndex() == index)
-                return student.getGrades();
-        }
-        return null;
-    }
-
-    @GET
-    @Path("/students/{index}/grades/{id}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Grade getStudentGrade(@PathParam("index") long index, @PathParam("id") long id) {
-        for (Student student : studentsList) {
-            if (student.getIndex() == index)
-                for (Grade grade : student.getGrades())
-                    if (grade.getId() == id)
-                        return grade;
-        }
-        return null;
-    }
-
-    @GET
-    @Path("/courses")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Course> getCourseList() {
-        return courses;
-    }
-
-    @GET
-    @Path("/courses/{id}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Course getCourse(@PathParam("id") long id) {
-        for (Course course : getCoursesList()) {
-            if (course.getId() == id)
-                return course;
-        }
-        return null;
-    }
-
-    @POST
-    @Path("/students")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response addStudent(Student student) {
-        Student stud = new Student();
-        stud.setIndex();
-        stud.setFirstName(student.getFirstName());
-        stud.setLastName(student.getLastName());
-        stud.setBirthday(student.getBirthday());
-        stud.setGrades(student.getGrades());
-        if(studentsList.add(stud)){
-            return Response.created(URI.create("/students/" + stud.getIndex())).build();
-        }
-        return Response.status(Response.Status.BAD_REQUEST).build();
-    }
-
-    @POST
-    @Path("/courses")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response addCourse(Course course) {
-        courses.add(course);
-
-        return Response.status(Response.Status.CREATED).build();
-    }
-
-    @POST
-    @Path("/students/{index}/grades")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response addGrade(@PathParam("index") long index, Grade grade) {
-        for (Student student : studentsList) {
-            if (student.getIndex() == index) {
-                student.getGrades().add(grade);
-            }
-        }
-        return Response.status(Response.Status.CREATED).build();
-    }
-
-    @PUT
-    @Path("/students/{index}")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response updateStudent(@PathParam("index") long index, Student student) {
-        Student a = new Student();
-        a.setGrades(student.getGrades());
-        a.setFirstName(student.getFirstName());
-        a.setLastName(student.getLastName());
-        a.setBirthday(student.getBirthday());
-        for (Student person : studentsList) {
-            if (person.getIndex() == index) {
-                a.setIndex(index);
-                int matches = studentsList.indexOf(person);
-                studentsList.set(matches, a);
-                return Response.status(Response.Status.OK).build();
-            }
-        }
-        return Response.status(Response.Status.NOT_FOUND).build();
-    }
-
-    @PUT
-    @Path("/courses/{id}")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response updateCourse(@PathParam("id") long id, Course course) {
-        Course a = new Course();
-        a.setName(course.getName());
-        a.setLecturer(course.getLecturer());
-        for (Course lesson : courses) {
-            if (lesson.getId() == id) {
-                a.setId(id);
-                int match = courses.indexOf(lesson);
-                courses.set(match, course);
-                return Response.status(Response.Status.OK).build();
-            }
-        }
-        return Response.status(Response.Status.NOT_FOUND).build();
-    }
-
-    @PUT
-    @Path("/students/{index}/grades/{id}")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response updateGrade(@PathParam("id") long id, @PathParam("index") long index, Grade grade) {
-        Grade a = new Grade();
-        a.setValue(grade.getValue());
-        a.setDate(grade.getDate());
-        a.setCourse(grade.getCourse());
-        for (Student student : studentsList) {
-            if (student.getIndex() == index) {
-                a.setId(id);
-                for (Grade mark : student.getGrades()) {
-                    if (mark.getId() == id) {
-                        int match = student.getGrades().indexOf(mark);
-                        student.getGrades().set(match, grade);
-                        return Response.status(Response.Status.OK).build();
-                    }
-                }
-            }
-        }
-        return Response.status(Response.Status.NOT_FOUND).build();
-    }
-
-    @DELETE
-    @Path("/students/{index}")
-    public Response deleteStudent(@PathParam("index") long index) {
-        for (Student student : studentsList) {
-            if (student.getIndex() == index) {
-                studentsList.remove(student);
-                return Response.status(Response.Status.OK).build();
-            }
-        }
-        return Response.status(Response.Status.NO_CONTENT).build();
-    }
-
-    @DELETE
-    @Path("/courses/{id}")
-    public Response deleteCourse(@PathParam("id") long id) {
-        for (Course course : getCourseList()) {
-            if (course.getId() == id) {
-                getCourseList().remove(course);
-                return Response.status(Response.Status.OK).build();
-            }
-        }
-        return Response.status(Response.Status.NO_CONTENT).build();
-    }
-
-    @DELETE
-    @Path("/students/{index}/grades/{id}")
-    public Response deleteGrade(@PathParam("id") long id, @PathParam("index") long index) {
-        for (Student student : studentsList) {
-            if (student.getIndex() == index) {
-                for (Grade grade : student.getGrades()) {
-                    if (grade.getId() == id) {
-                        student.getGrades().remove(grade);
-                        return Response.status(Response.Status.NO_CONTENT).build();
-                    }
-                }
-            }
-        }
-        return Response.status(Response.Status.NO_CONTENT).build();
-    }
-}
-*/

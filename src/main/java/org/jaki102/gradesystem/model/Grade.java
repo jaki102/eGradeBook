@@ -39,7 +39,7 @@ public class Grade {
   //  private static long inc = 1;
     private float value;
 
-  //  @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd", timezone="CET")
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd", timezone="CET")
     private Date date;
 
     @Embedded

@@ -39,6 +39,18 @@ public class CourseService {
         return courseDao.readByParameters(name, lecturer);
     }
 
+    public Course getCourseById(int id) {
+        DaoManager manager = new DaoManager();
+        CoursesDao courseDao = manager.getCoursesDao();
+        return courseDao.readByParameters(id);
+    }
+
+    public List<Course> getCoursesByLecturerFilter(String lecturer) {
+        DaoManager manager = new DaoManager();
+        CoursesDao courseDao = manager.getCoursesDao();
+        return courseDao.getByLecturer(lecturer);
+    }
+
     public boolean updateCourse(Course course) {
         DaoManager manager = new DaoManager();
         CoursesDao courseDao = manager.getCoursesDao();
