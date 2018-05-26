@@ -169,7 +169,7 @@ public class MyResource {
         // filtering by grade's value
         if (value != null && valueRelation != null) {
             switch (valueRelation.toLowerCase()) {
-                case "grater":
+                case "greater":
                     grades = grades.stream().filter(gr -> gr.getValue() > Float.valueOf(value).floatValue()).collect(Collectors.toList());
                     break;
                 case "lower":
