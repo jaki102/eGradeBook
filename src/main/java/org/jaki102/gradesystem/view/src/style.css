@@ -1,13 +1,14 @@
 *{
     margin:0;
     padding:0;
+    box-sizing: border-box;
 }
 body{
     width: 100%;
     font-family: "Arial", Times, serif;
 }
 #wrapper{
-    height: 100vh;
+    min-height: 100vh;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -38,53 +39,21 @@ header i{
     justify-content: center;
     align-items: center;
 }
-.main {
-    position: absolute;
-    top:0;
-    left: 7px;
-    height: 80px;
-    background: #fff;
-    width: 7%;
-    transform: skewX(10deg);
-}
-.main2{
-    position: absolute;
-    top:0;
-    left: 0;
-    height: 80px;
-    width: 5%;
-    background: #fff;
-}
-.main3{
-    position: absolute;
-    top:0;
-    right:7px;
-    height: 80px;
-    background: #fff;
-    width: 7%;
-    transform: skewX(-10deg);
-}
-.main4{
-    position: absolute;
-    top:0;
-    right: 0;
-    height: 80px;
-    width: 5%;
-    background: #fff;
-}
 /*---------- end header-------- */
 #content{
     display: flex;
     flex-wrap: wrap;
     width:100%;
     background-image: url("https://s3.pixers.pics/pixers/700/FO/73/25/93/31/700_FO73259331_c3a7ad828fdedff5b4414ec3f686eb42.jpg");
-    height: calc(100vh - 150px);
-    flex-grow: 5;
+    min-height: calc(100vh - 170px);
+    height: 100%;
 }
 /*---------- start navigation ----------*/
 #nav{
     background-color: #efefef;
     flex: 1 1 250px;
+    display: block;
+ 
 }
 #nav ul {
     list-style-type: none;
@@ -101,8 +70,9 @@ header i{
     width: 100%;
     height:100%;
     display: block;
+    font-size: 1.2em;
     font-weight: 600;
-    padding:  15% 0 15% 0;
+    padding: 9% 0 9% 0;
 }
 #nav ul li:hover {
     text-decoration: none;
@@ -119,41 +89,105 @@ article:target{
     display: block;
 }
 article{
-    box-sizing: border-box;
     display: none;
     flex: 3 1 60%;
     padding: 3%;
-    height: 100%;
+    padding-left: 5%;
+    padding-bottom: 5%;
     width:100%;
 }
-table th >input{
-    box-sizing: border-box;
-    width:80%;
-    height: 100%;
-    background-image: url("https://image.flaticon.com/icons/png/512/70/70490.png");
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-origin: content-box;
-    background-size: 0.8rem 0.8rem;
-
-}
-table{
+table {
     border-collapse: collapse;
-    width: 80%;
+    min-width: 859px;
+
 }
 table td, table th {
-    border: 1px solid #ddd;
+    border: 1px solid #9e9e9e;
 }
-table tr:nth-child(even){background-color: #f2f2f2;}
-
-table tr:hover {background-color: #ddd;}
-
+table tr{
+    background-color: #e0e0e0 ;
+}
+table tr:nth-child(even){
+    background-color: #f2f2f2;
+}
+table tr:hover {
+    background-color: #ffe57f;
+}
 table th {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    text-align: left;
-    background-color: #4CAF50;
-    color: white;
+    text-align: center;
+    background-color: #fdb913;
+}
+#gradesTable{
+    min-width: 640px;
+}
+#coursesTable{
+    min-width: 640px;
+}
+#gradesTable tr td:nth-child(1){
+    width:250px;
+}
+#gradesTable tr td:nth-child(2){
+    width:100px;
+}
+#gradesTable tr td:nth-child(3){
+    width:150px;
+}
+#gradesTable tr td:nth-child(4){
+    margin:0;
+}
+#coursesTable tr td:nth-child(1){
+    width:250px;
+}
+#coursesTable tr td:nth-child(2){
+    width:250px;
+}
+#coursesTable tr td:nth-child(3){
+    margin:0;
+}
+table tr td:last-child{
+    display: flex;
+}
+table th input{
+    background: url("http://www.icone-png.com/png/54/53733.png") no-repeat 95% 50%;
+    background-size: 17px;
+    width:100%;
+}
+table tr th:last-child input{
+    background: none;
+    width:100%;
+    text-align: center;
+}
+input{
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    width: 100%;
+    padding-left: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border:transparent;
+    background-color: transparent;
+    max-height: 26px;
+}
+input:invalid{
+    color: #E80008;
+}
+select{
+    width: 100%;
+    height:100%;
+    padding-left: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background-color: transparent;
+    border:transparent;
+}
+h2{
+    font-size: 1.7em;
+    margin-bottom: 25px;
+}
+button{
+    padding:3px;
+    margin:0;
+    height: 100%;
+    flex-grow: 1;
 }
 .tableHelper{
     overflow-x:auto;
@@ -168,7 +202,8 @@ footer{
     display: flex;
     justify-content: center;
     width:100%;
-    height:70px;
+    height:90px;
+    padding-top:15px;
 }
 .footInside {
    display: flex;
@@ -180,3 +215,73 @@ footer{
     padding-bottom: 10px;
 }
 /*---------- end footer ----------*/
+
+/*---------- start print style ----------*/
+@media print {
+
+    #wrapper{
+        min-height: 0;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    header{
+        display: none;
+    }
+    #content{
+        width:100%;
+        background-image: none;
+        min-height: 0;
+    }
+    #nav, #nav ul{
+        display: none;    
+    }
+    article{
+        display: none;
+        flex: 3 1 60%;
+        padding: 0;
+        width:100%;
+    }
+    table {
+        border-collapse: collapse;
+        min-width: 0;
+        width:100%;
+    
+    }
+    table td, table th {
+        border: none;
+        border-bottom: 1px solid black;
+    }
+    table tr:first-child{
+        border-top: 1px solid black;
+    }
+    table tr,
+    table tr:nth-child(even),
+    table tr:hover,
+    table th{
+        background-color: white;
+    }
+    table tr:last-child,
+    table tr td:last-child,
+    table tr th:last-child{
+        display:none;
+    }
+    table th input {
+        font-size: large;
+    }
+    table select {
+        -webkit-appearance:none;
+        -moz-appearance:none;
+        appearance:none;
+    }
+    table th::placeholder {
+        color: black;
+    }
+    .tableHelper{
+        overflow-x:hidden;
+    }
+    footer{
+        display:none;   
+    }
+ }
+/*---------- end print style ----------*/
