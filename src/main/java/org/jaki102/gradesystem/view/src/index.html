@@ -7,6 +7,12 @@
     <title>GradeBook Manager</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script type="text/javascript" src="library/jquery-3.3.1.min.js" defer></script>
+    <script type="text/javascript" src="library/knockout-3.4.2.js" defer></script>
+    <script type="text/javascript" src="library/mapping.js"defer></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js" defer></script>
+    <script type="text/javascript" src="script.js" defer></script>
+
 </head>
 <body>
     <div id="wrapper">
@@ -18,15 +24,15 @@
         <div id= "content">
             <nav id = "nav">
                 <ul>
-                    <li><a href = "#students">Manage students</a></li>
-                    <li><a href = "#courses">Manage courses</a></li>
+                    <li id= "displayStudents"><a href = "#students">Manage students</a></li>
+                    <li id= "displayCourse"><a href = "#courses">Manage courses</a></li>
                 </ul>
             </nav>
             <article id = "students">
                 <h2>List of students</h2>     
                 <form>
                     <div class="tableHelper">       
-                        <table>
+                        <table id = "studentTable">
                             <tr>
                                 <th><input type="number" name="index" placeholder = "Index" min="0"></th>
                                 <th><input type="text" name="firstName" placeholder = "First name"></th>
@@ -34,9 +40,9 @@
                                 <th><input type="text" name="birthday" placeholder="Birthday" onfocus="(this.type='date')" onblur="(this.type='text')"></th>
                                 <th><input type="text" name="action" value="Action" readonly></th>           
                             </tr>
-                            <tr>
+                            <tr >
                                 <td><input type="number" name="index" value="122305" min="0" readonly></td>
-                                <td><input type="text" name="firstName" value="Jakub"></td>
+                                <td><input type="text" name="firstName" value="Jakub" required></td>
                                 <td><input type="text" name="ilastName" value="Białek"></td>
                                 <td><input type="text" name="birthday" onfocus="(this.type='date')" onblur="(this.type='text')" value="1995-05-17"></td> 
                                 <td>
@@ -68,12 +74,12 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td><input type="number" name="index" placeholder="Index" min="0" required></td>
-                                <td><input type="text" name="firstName" placeholder="First name" required></td>
-                                <td><input type="text" name="ilastName" placeholder="Last name" required></td>
-                                <td><input type="text" name="birthday" placeholder="Birthday" onfocus="(this.type='date')" onblur="(this.type='text')" required></td>
+                                <td><input type="number" id="index" placeholder="Index" min="0" required></td>
+                                <td><input type="text" id="firstName" placeholder="First name" required></td>
+                                <td><input type="text" id="ilastName" placeholder="Last name" required></td>
+                                <td><input type="text" id="birthday" placeholder="Birthday" onfocus="(this.type='date')" onblur="(this.type='text')" required></td>
                                 <td>
-                                    <button type="submit">Add student</button>
+                                    <button type="submit" id="addStudent">Add student</button>
                                 </td>
                             </tr> 
                         </table>

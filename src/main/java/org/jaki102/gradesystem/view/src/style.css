@@ -169,6 +169,7 @@ input{
 }
 input:invalid{
     color: #E80008;
+    border:2px solid #E80008;
 }
 select{
     width: 100%;
@@ -268,6 +269,10 @@ footer{
     }
     table th input {
         font-size: large;
+        background: none;
+    }
+    table th input::placeholder {
+        color:black;
     }
     table select {
         -webkit-appearance:none;
