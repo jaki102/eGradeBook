@@ -31,7 +31,7 @@ public class Main {
                 .register(CustomHeaders.class);
 
         // create and start a new instance of grizzly http server
-        // exposing the Jersey application at BASE
+        // exposing the Jersey application at
         return GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
     }
 
