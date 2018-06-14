@@ -27,7 +27,8 @@ public class Main {
                 .packages("org.glassfish.jersey.examples.linking")
                 .register(DeclarativeLinkingFeature.class)
                 .register(DateParamConverterProvider.class)
-                .register(RestError.class);
+                .register(RestError.class)
+                .register(CustomHeaders.class);
 
         // create and start a new instance of grizzly http server
         // exposing the Jersey application at BASE_URI

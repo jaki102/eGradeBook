@@ -16,8 +16,8 @@ var studentTemplate = "" +
 '<td><input type="text" name="lastName" value="{{lastName}}"></td>'+
 '<td><input type="text" name="birthday" onfocus="(this.type=\'date\')" onblur="(this.type=\'text\')" value="{{birthday}}"></td>'+
 '<td>'+
-    '<button onclick="window.location.href=\'#grades\'">See grades</button>'+
-    '<button type="button" data-id = "{{index}} class ="seeGradeTable">Modify</button>'+
+    '<button onclick="window.location.href=\'#grades\'" data-id = "{{index}} id ="seegradetable">See grades</button>'+
+    '<button type="button">Modify</button>'+
     '<button type="button">Delete</button>'+
 '</td>'+
 '</tr>';
@@ -73,8 +73,7 @@ function addCourseRow(course) {
         }
     });
 
-     $(".seegradetable").on( "click", function(){
-    //     console.log('hello');
+     $("#seegradetable").on("click", function(){
         $.ajax({
             type: 'GET',
             headers: {
