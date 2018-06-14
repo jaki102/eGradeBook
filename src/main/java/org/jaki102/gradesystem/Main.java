@@ -20,7 +20,7 @@ public class Main {
     public static final String BASE_URI = "http://localhost:8080/myapp/";
 
     public static HttpServer startServer() {
-        // create a resource config that scans for JAX-RS resources and provindexers
+
         final ResourceConfig rc = new ResourceConfig()
                 .packages("org.jaki102.gradesystem")
                 .packages("org.glassfish.jersey.examples.linking")
