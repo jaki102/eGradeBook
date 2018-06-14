@@ -21,7 +21,7 @@ public class Main {
 
     public static HttpServer startServer() {
         // create a resource config that scans for JAX-RS resources and provindexers
-        // in com.example.rest package
+        // in com.example.rest
         final ResourceConfig rc = new ResourceConfig()
                 .packages("org.jaki102.gradesystem")
                 .packages("org.glassfish.jersey.examples.linking")
