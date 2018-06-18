@@ -1,123 +1,286 @@
-"use strict";
-$(document).ready(function () {
-var students = ko.observableArray();
-var courses = ko.observableArray();
-var grades = ko.observableArray();
-var $tableStudent = $('#studentTable');
-var $tableCourse = $('#coursesTable');
-var $index = $('#index');
-var $firstName = $('#firstName');
-var $lastName = $('#lastName');
-var $birthday = $('#birthday');
-var studentTemplate = "" +
-'<tr>'+
-'<td><input type="number" name="index" value="{{index}}" min="0" readonly></td>'+
-'<td><input type="text" name="firstName" value="{{firstName}}"></td>'+
-'<td><input type="text" name="lastName" value="{{lastName}}"></td>'+
-'<td><input type="text" name="birthday" onfocus="(this.type=\'date\')" onblur="(this.type=\'text\')" value="{{birthday}}"></td>'+
-'<td>'+
-    '<button onclick="window.location.href=\'#grades\'" data-id = "{{index}} id ="seegradetable">See grades</button>'+
-    '<button type="button">Modify</button>'+
-    '<button type="button">Delete</button>'+
-'</td>'+
-'</tr>';
+"use strict"
 
-var courseTemplate = "" +
-'<tr>' +
-'<td><input type="text" name="name" value="{{name}}"></td>' +
-'<td><input type="text" name="lecturer" value="{{lecturer}}"></td>' +
-'<td>' +
-    '<button type="button">Modify</button>' +
-    '<button type="button">Delete</button>' +
-'</td>' +
-'</tr>'
-function addStudentRow(student) {
-    $tableStudent.append(Mustache.render(studentTemplate, student));
-}
-function addCourseRow(course) {
-    $tableCourse.append(Mustache.render(courseTemplate, course));
-}
-    $.ajax({
-        type: 'GET',
-        headers: {
-            Accept: "application/json; charset=utf-8"
-        },
-        url: 'http://localhost:8080/myapp/students',
-        success: function (data) {
-            ko.mapping.fromJS(data, students);
-            $.each(data, function(i, student){
-                addStudentRow(student);
-            });
-            console.log(data)
-        },
-        error: function(){
-            alert('error loading students');
-        }
-    });
+var url = 'http://localhost:8080/myapp/';
 
-    $.ajax({
-        type: 'GET',
-        headers: {
-            Accept: "application/json; charset=utf-8"
-        },
-        url: 'http://localhost:8080/myapp/courses',
-        success: function (dataCourse) {
-            ko.mapping.fromJS(dataCourse, courses);
-            $.each(dataCourse, function(i, course){
-                addCourseRow(course);
-            });
-            console.log(dataCourse)
-        },
-        error: function(){
-            alert('error loading courses');
-        }
-    });
+class Student {
+    constructor(data = {firstName:"", lastName:"", birthday:""}){
+        this.firstName = new ko.observable(data.firstName);
+        this.lastName = new ko.observable(data.lastName);
+        this.birthday = new ko.observable(data.birthday);
+        this.index = new ko.observable(data.index);
+        this.addSubscribe();
+    }
 
-     $("#seegradetable").on("click", function(){
+    addSubscribe(){
+        this.firstName.subscribe(this.PUT.bind(this));
+        this.lastName.subscribe(this.PUT.bind(this));
+        this.birthday.subscribe(this.PUT.bind(this));
+    }
+
+    getData(){
+        return ko.toJSON({
+            firstName: this.firstName,
+            lastName: this.lastName,
+            birthday: this.birthday
+        });
+    }
+
+    PUT(){
+        console.log(this.getData());
         $.ajax({
-            type: 'GET',
+            url: "http://localhost:8080/myapp/students/" + ko.toJS(this.index),
+            method: "PUT",
+            data: this.getData(),
+            async: false,
             headers: {
-                Accept: "application/json; charset=utf-8"
-            },
-            url: 'http://localhost:8080/myapp/students/1/grades',
-            success: function (dataGrade) {
-                ko.mapping.fromJS(dataGrade, grades);
-                 $.each(dataGrade, function(i, grade){
-                    
-                });
-                console.log(dataGrade);
-            },
-            error: function(){
-                alert('error loading grades');
+                Accept: "application/json",
+                "Content-Type": "application/json"
             }
         })
-})
-});
+    }
+    DELETE(){
+        $.ajax({
+            url: "http://localhost:8080/myapp/students/" + ko.toJS(this.index),
+            method: "DELETE",
+            async: false,
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+            }
+        });
+    }
+    POST(){
+        $.ajax({
+            url: "http://localhost:8080/myapp/students/",
+            method: "POST",
+            async: false,
+            data: this.getData(),
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+            }
+        });
+    }
+}
+class Course {
+    constructor(data = {name: "", lecturer: "", id: ""}){
+        this.name = new ko.observable(data.name);
+        this.lecturer = new ko.observable(data.lecturer);
+        this.id = new ko.observable(data.id);
+        this.addSubscribe();
+    }
 
-    // $('#addStudent').on('click', function(){
+    addSubscribe(){
+        this.name.subscribe(this.PUT.bind(this));
+        this.lecturer.subscribe(this.PUT.bind(this));
+        this.id.subscribe(this.PUT.bind(this));;
+    }
 
-    //     var newStudent = {
-    //         index: $index.val(),
-    //         firstName: $firstName.val(),
-    //         lastName: $lastName.val(),
-    //         birthday: $birthday.val(),
-    //     }
+    getData(){
+        return ko.toJSON({
+            name: this.name,
+            lecturer: this.lecturer
+        });
+    }
 
-    //     $.ajax({
-    //         type: 'POST',
-    //         headers: {
-    //             Accept: "application/json; charset=utf-8"
-    //         },
-    //         url: 'http://localhost:8080/myapp/students',
-    //         data: ko.mapping.toJS(newStudent),
-    //         success: function (data) {
-                
-    //             students.push(data);
-    //             addStudent(newStudent);
-    //         },
-    //         error: function(){
-    //             alert('error creating students');
-    //         }
-    //     });
+    PUT(){
+        $.ajax({
+            url: "http://localhost:8080/myapp/courses/" + ko.toJS(this.id),
+            method: "PUT",
+            data: this.getData(),
+            async: false,
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+            }
+        });
+    }
 
-    // });
+    DELETE(){
+        $.ajax({
+            url: "http://localhost:8080/myapp/courses/" + ko.toJS(this.id),
+            method: "DELETE",
+            async: false,
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+            }
+        });
+    }
+
+    POST(){
+        $.ajax({
+            url: "http://localhost:8080/myapp/courses/",
+            method: "POST",
+            async: false,
+            data: this.getData(),
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+            }
+        });
+    }
+}
+class Grade {
+    constructor(data = {id: "", value: "", course: "", date: ""},student = 0){
+        this.student = student;
+        this.id = new ko.observable(data.id);
+        this.value = new ko.observable(data.value);
+        this.course = new ko.observable(data.course.uid);
+        this.date = new ko.observable(data.date);
+        this.addSubscribe();
+    }
+
+    addSubscribe(){
+        this.value.subscribe(this.PUT.bind(this));
+        this.course.subscribe(this.PUT.bind(this));
+        this.date.subscribe(this.PUT.bind(this));
+    }
+
+    getData(){
+        return ko.toJSON({
+            value: this.value,
+            course: {id: this.course},
+            date: this.date
+        });
+    }
+
+    PUT(){
+        $.ajax({
+            url: "http://localhost:8080/myapp/students/" + this.student + "/grades/" + ko.toJS(this.id),
+            method: "PUT",
+            data: this.getData(),
+            async: false,
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+            }
+        });
+    }
+
+    DELETE(){
+        $.ajax({
+            url: "http://localhost:8080/myapp/students/" + this.student + "/grades/" + ko.toJS(this.id),
+            method: "DELETE",
+            async: false,
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+            }
+        });
+    }
+
+    POST(){
+        $.ajax({
+            url: "http://localhost:8080/myapp/students/" + this.student + "/grades/",
+            method: "POST",
+            async: false,
+            data: this.getData(),
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+            }
+        });
+    }
+}
+
+var viewModel = function(){
+    var self = this;
+
+    this.students = ko.observableArray([]);
+    this.studentToAdd = new Student();
+    this.courses = ko.observableArray([]);
+    this.courseToAdd = new Course();
+    this.grades = ko.observableArray([]);
+    this.gradeToAdd = new Grade();
+    this.currentStudent = new Student();
+
+    this.getStudents = function() {
+        var mapping = {
+            create: function(options) {
+                return new Student(options.data);
+            }
+        };
+        var student = JSON.parse($.ajax({
+            url: url + 'students',
+            async: false,
+            headers: {
+                Accept: "application/json",
+            }
+        }).responseText);
+        ko.mapping.fromJS(student,mapping,self.students);
+    }
+    this.getStudents();
+    this.addStudent = function(){
+        self.studentToAdd.POST();
+        self.getStudents();
+        ko.mapping.fromJS(new Student,{},self.studentToAdd);
+    }
+    this.deleteStudent = function(student){
+        student.DELETE();
+        self.getStudents();
+    }
+
+    this.getCourses = function() {
+        var mapping = {
+            create: function(options) {
+                return new Course(options.data);
+            }
+        };
+        var courses = JSON.parse($.ajax({
+            url: url + 'courses',
+            async: false,
+            headers: {
+                Accept: "application/json",
+            }
+        }).responseText);
+        ko.mapping.fromJS(courses,mapping,self.courses);
+    }
+    this.getCourses();
+    this.addCourse= function(){
+        self.courseToAdd.POST();
+        self.getCourses();
+        ko.mapping.fromJS(new Course,{},self.courseToAdd);
+    }
+    this.deleteCourse = function(course){
+        course.DELETE();
+        self.getCourses();
+    }
+    this.getGradesForStudent = function(index){
+        var mapping = {
+            create: function(options) {
+                return new Grade(options.data, index);
+            }
+        };
+        var grades = JSON.parse($.ajax({
+            url: url + 'students/'+index+'/grades',
+            async: false,
+            headers: {
+                Accept: "application/json"
+            }
+        }).responseText);
+        ko.mapping.fromJS(grades,mapping,self.grades);
+        self.gradeToAdd.student = index;
+    }
+    this.addGrade = function(){
+        self.gradeToAdd.POST();
+        self.getGradesForStudent(self.gradeToAdd.student);
+        //ko.mapping.fromJS(new Grade,{},self.gradeToAdd);
+    }
+    this.deleteGrade = function(grade){
+        grade.DELETE();
+        self.getGradesForStudent(self.gradeToAdd.student);
+    }
+    self.onClickGrades = function(data) {
+        var dataJS = ko.toJS(data);
+        ko.mapping.fromJS(dataJS,{},self.currentStudent);
+
+        if(typeof dataJS.index !== 'undefined'){
+            self.getGradesForStudent(dataJS.index);
+        }
+        window.location = "#grades";
+    }
+}
+var  newViewModel = new viewModel();
+
+ko.applyBindings(newViewModel);
