@@ -16,6 +16,7 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URI;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,9 +33,14 @@ public class MyResource {
     @GET
     @Path("/students")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response getAllStudents(@QueryParam("firstName") String firstName, @QueryParam("lastName") String lastName, @QueryParam("birthday") Date birthday, @QueryParam("dateRelation") String dateRelation) {
+    public Response getAllStudents( @QueryParam("index") Integer index, @QueryParam("firstName") String firstName, @QueryParam("lastName") String lastName, @QueryParam("birthday") String birthday, @QueryParam("dateRelation") String dateRelation) {
         StudentsService studentService = new StudentsService();
-        List<Student> students = studentService.getStudentsByFilters(firstName, lastName, birthday, dateRelation);
+        List<Student> students = null;
+        try {
+            students = studentService.getStudentsByFilters(index, firstName, lastName, birthday, dateRelation);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         GenericEntity<List<Student>> entity = new GenericEntity<List<Student>>(Lists.newArrayList(students)) {
         };
@@ -165,7 +171,6 @@ public class MyResource {
         if (courseName != null) {
             grades = grades.stream().filter(gr -> gr.getCourse().getName().equals(courseName)).collect(Collectors.toList());
         }
-
         // filtering by grade's value
         if (value != null && valueRelation != null) {
             switch (valueRelation.toLowerCase()) {
@@ -178,8 +183,7 @@ public class MyResource {
             }
         }
         // creating list of student's grades
-        GenericEntity<List<Grade>> entity = new GenericEntity<List<Grade>>(Lists.newArrayList(grades)) {
-        };
+        GenericEntity<List<Grade>> entity = new GenericEntity<List<Grade>>(Lists.newArrayList(grades)) {};
         // creating xml response
         return Response.status(Response.Status.OK).entity(entity).build();
     }
@@ -271,7 +275,7 @@ public class MyResource {
 
             // checking if grade's course exists
             CourseService courseService = new CourseService();
-            Course searchedCourse = courseService.getCourseByParameters(grade.getCourse().getName(), grade.getCourse().getLecturer());
+            Course searchedCourse = courseService.getCourseById(grade.getCourse().getId());
             System.out.println("Course : " + searchedCourse);
             if (searchedCourse == null)
                 return Response.status(Response.Status.NOT_FOUND).entity("Grade's course not found").build();
@@ -279,6 +283,7 @@ public class MyResource {
             searchedCourse.setId(grade.getCourse().getId());
             grade.setId(id);
             grade.setStudentIndex(searchedStudent.getIndex());
+            grade.setCourse(searchedCourse);
             searchedStudent.updateStudentGrade(grade);
             studentService.updateStudent(searchedStudent, false);
             String result = "Student grade " + grade + " updated!";
@@ -316,9 +321,9 @@ public class MyResource {
     @GET
     @Path("/courses")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response getAllCourses(@QueryParam("lecturer") String lecturer) {
+    public Response getAllCourses(@QueryParam("lecturer") String lecturer, @QueryParam("name") String name) {
         CourseService courseService = new CourseService();
-        List<Course> courses = courseService.getCoursesByLecturerFilter(lecturer);
+        List<Course> courses = courseService.getCoursesByLecturerFilter(name, lecturer);
 
         GenericEntity<List<Course>> entity = new GenericEntity<List<Course>>(Lists.newArrayList(courses)) {
         };

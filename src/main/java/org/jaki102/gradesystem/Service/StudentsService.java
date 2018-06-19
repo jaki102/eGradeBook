@@ -4,6 +4,7 @@ import org.jaki102.gradesystem.dao.DaoManager;
 import org.jaki102.gradesystem.dao.StudentsDao;
 import org.jaki102.gradesystem.model.Student;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -33,10 +34,10 @@ public class StudentsService {
         return studentsDao.getStudents(index);
     }
 
-    public List<Student> getStudentsByFilters(String firstName, String lastName, Date birthday, String dateRelation) {
+    public List<Student> getStudentsByFilters(Integer index, String firstName, String lastName, String birthday, String dateRelation) throws ParseException {
         DaoManager manager = new DaoManager();
         StudentsDao studentsDao = manager.getStudentsDao();
-        return studentsDao.getStudentsByFilters(firstName, lastName, birthday, dateRelation);
+        return studentsDao.getStudentsByFilters(index, firstName, lastName, birthday, dateRelation);
     }
 
     public boolean updateStudent(Student student, boolean force) {

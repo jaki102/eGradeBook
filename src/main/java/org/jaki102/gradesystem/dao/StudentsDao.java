@@ -6,6 +6,9 @@ import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.UpdateOperations;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -47,12 +50,17 @@ public class StudentsDao {
         datastore.update(studentToUpdate, updateOperations);
         return true;
     }
-    public List<Student> getStudentsByFilters(String firstName, String lastName, Date birthday, String dateRelation) {
+    public List<Student> getStudentsByFilters(Integer index, String firstName, String lastName, String birthday, String dateRelation) throws ParseException {
         final Query<Student> query = datastore.createQuery(Student.class);
+        if (index != null)
+            query.field("index").equal(index);
         if(firstName != null)
             query.field("firstName").containsIgnoreCase(firstName);
         if(lastName != null)
             query.field("lastName").containsIgnoreCase(lastName);
+        if(birthday != null && !birthday.equals("")){
+            query.field("birthday").equal(dateFromString(birthday));
+        }
         if(birthday != null && dateRelation != null) {
             if(dateRelation.equals("equal"))
                 query.field("birthday").equal(birthday);
@@ -76,6 +84,14 @@ public class StudentsDao {
             return true;
         else
             return false;
+    }
+
+    private Date dateFromString(String date) throws ParseException {
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        Date d = null;
+        d = format.parse(date);
+
+        return d;
     }
 
 }

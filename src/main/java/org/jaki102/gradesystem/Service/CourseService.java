@@ -45,10 +45,10 @@ public class CourseService {
         return courseDao.readByParameters(id);
     }
 
-    public List<Course> getCoursesByLecturerFilter(String lecturer) {
+    public List<Course> getCoursesByLecturerFilter(String name, String lecturer) {
         DaoManager manager = new DaoManager();
         CoursesDao courseDao = manager.getCoursesDao();
-        return courseDao.getByLecturer(lecturer);
+        return courseDao.getByLecturer(name, lecturer);
     }
 
     public boolean updateCourse(Course course) {

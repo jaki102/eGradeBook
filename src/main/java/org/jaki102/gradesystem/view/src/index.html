@@ -34,10 +34,10 @@
                         <table id = "studentTable">
                             <thead>
                                 <tr>
-                                    <th><input type="number" name="index" placeholder = "Index" min="0"></th>
-                                    <th><input type="text" name="firstName" placeholder = "First name"></th>
-                                    <th><input type="text" name="lastName" placeholder = "Last name"> </th>
-                                    <th><input type="text" name="birthday" placeholder="Birthday" onfocus="(this.type='date')" onblur="(this.type='text')"></th>
+                                    <th><input data-bind="value: studentSearch.index" type="number" name="index" placeholder = "Index" min="0"></th>
+                                    <th><input data-bind="value: studentSearch.firstName" type="text" name="firstName" placeholder = "First name"></th>
+                                    <th><input data-bind="value: studentSearch.lastName" type="text" name="lastName" placeholder = "Last name"> </th>
+                                    <th><input data-bind="value: studentSearch.birthday" type="text" name="birthday" placeholder="Birthday" onfocus="(this.type='date')" onblur="(this.type='text')"></th>
                                     <th><input type="text" name="action" value="Action" readonly></th>           
                                 </tr>
                             </thead>
@@ -45,8 +45,8 @@
                                 <tr >
                                     <td><input data-bind="value: index" type="number" name="index" value="122305" min="0" readonly></td>
                                     <td><input data-bind="value: firstName" type="text" name="firstName" value="Jakub" required></td>
-                                    <td><input data-bind="value: lastName" type="text" name="lastName" value="Białek"></td>
-                                    <td><input data-bind="value: birthday" type="text" name="birthday" onfocus="(this.type='date')" onblur="(this.type='text')" value="1995-05-17"></td> 
+                                    <td><input data-bind="value: lastName" type="text" name="lastName" value="Białek" required></td>
+                                    <td><input data-bind="value: birthday" type="text" name="birthday" onfocus="(this.type='date')" onblur="(this.type='text')" value="1995-05-17" required></td> 
                                     <td>
                                         <button onclick="window.location.href='#grades'" data-bind="click: $parent.onClickGrades">See grades</button>
                                         <button type="button" data-bind="click: $parent.deleteStudent.bind($data)">Delete</button>
@@ -55,6 +55,7 @@
                             </tbody>
                             <tfoot>
                                 <tr>
+                                    <td><input readonly></td>
                                     <td><input data-bind="value: studentToAdd.firstName" type="text" id="firstName" placeholder="First name" required></td>
                                     <td><input data-bind="value: studentToAdd.lastName" type="text" id="lastName" placeholder="Last name" required></td>
                                     <td><input data-bind="value: studentToAdd.birthday" type="text" id="birthday" placeholder="Birthday" onfocus="(this.type='date')" onblur="(this.type='text')" required></td>
@@ -73,8 +74,8 @@
                     <div class="tableHelper">
                         <table id = "coursesTable">
                             <tr>
-                                <th><input type="text" name="name" placeholder="Name"></th>
-                                <th><input type="text" name="lecturer" placeholder="Lecturer"></th>
+                                <th><input data-bind="value: courseSearch.name" type="text" name="name" placeholder="Name"></th>
+                                <th><input data-bind="value: courseSearch.lecturer" type="text" name="lecturer" placeholder="Lecturer"></th>
                                 <th><input type="text" name="action" value="Action" readonly></th>           
                             </tr>
                             <tbody data-bind="foreach: courses">
@@ -98,14 +99,14 @@
                 </form>
             </article>
             <article id = "grades">
-                <h2>Grades</h2>
+                <h2>Grades: <span data-bind="text: currentStudent.firstName"></span> <span data-bind="text: currentStudent.lastName"></span> </h2>
                 <form>
                     <div class="tableHelper">
                         <table id = "gradesTable">
                             <tr>
-                                <th><input type="text" name="course" placeholder="Course"></th>
-                                <th><input type="number" name="value" placeholder="Value" step = "0.5" min = "2.0" max = "5.0"></th>
-                                <th><input type="text" name="date" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Date"></th>
+                                <th><input data-bind="value: gradeSearch.course" type="text" name="course" placeholder="Course"></th>
+                                <th><input data-bind="value: gradeSearch.value" type="number" name="value" placeholder="Value" step = "0.5" min = "2.0" max = "5.0"></th>
+                                <th><input data-bind="value: gradeSearch.date" type="text" name="date" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Date"></th>
                                 <th><input type="text" name="action" value="Action" readonly></th>              
                             </tr>
                             <tbody data-bind="foreach: grades">
@@ -138,6 +139,7 @@
                                         optionsValue: function(item) {
                                         return item.id
                                         },
+                                        optionsCaption: 'Choose subject',
                                         value: gradeToAdd.course">
                                     </select>
                                 </td>
