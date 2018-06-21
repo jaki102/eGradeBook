@@ -22,7 +22,7 @@ public class Course {
 
     @Id
     @XmlTransient
-    @XmlJavaTypeAdapter(ObjectIdJaxbAdapter.class)
+    //@XmlJavaTypeAdapter(ObjectIdJaxbAdapter.class)
     private ObjectId _id;
 
     @Indexed

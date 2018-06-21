@@ -152,6 +152,7 @@ public class MyResource {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response getStudentGrades(@PathParam("index") int index,
                                      @QueryParam("courseName") String courseName,
+                                     @QueryParam("date") Date date,
                                      @QueryParam("value") String value,
                                      @QueryParam("valueRelation") String valueRelation) {
         // getting student by it's index
@@ -167,20 +168,25 @@ public class MyResource {
         if (grades == null || grades.isEmpty())
             return Response.status(Response.Status.NOT_FOUND).entity("Student's grades not found").build();
 
+        if (date != null) {
+            grades = grades.stream().filter(gr -> gr.getDate().equals(date)).collect(Collectors.toList());
+        }
         // filtering by course
         if (courseName != null) {
-            grades = grades.stream().filter(gr -> gr.getCourse().getName().equals(courseName)).collect(Collectors.toList());
+            grades = grades.stream().filter(gr -> gr.getCourse().getName().contains(courseName)).collect(Collectors.toList());
         }
+
         // filtering by grade's value
-        if (value != null && valueRelation != null) {
-            switch (valueRelation.toLowerCase()) {
-                case "greater":
-                    grades = grades.stream().filter(gr -> gr.getValue() > Float.valueOf(value).floatValue()).collect(Collectors.toList());
-                    break;
-                case "lower":
-                    grades = grades.stream().filter(gr -> gr.getValue() < Float.valueOf(value).floatValue()).collect(Collectors.toList());
-                    break;
-            }
+        if (value != null /*&& valueRelation != null*/) {
+//            switch (valueRelation.toLowerCase()) {
+//                case "greater":
+//                    grades = grades.stream().filter(gr -> gr.getValue() > Float.valueOf(value).floatValue()).collect(Collectors.toList());
+//                    break;
+//                case "lower":
+//                    grades = grades.stream().filter(gr -> gr.getValue() < Float.valueOf(value).floatValue()).collect(Collectors.toList());
+//                    break;
+            grades = grades.stream().filter(gr -> gr.getValue() == Float.valueOf(value).floatValue()).collect(Collectors.toList());
+           // }
         }
         // creating list of student's grades
         GenericEntity<List<Grade>> entity = new GenericEntity<List<Grade>>(Lists.newArrayList(grades)) {};

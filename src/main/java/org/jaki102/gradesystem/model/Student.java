@@ -24,7 +24,7 @@ public class Student {
 
     @Id
     @XmlTransient
-    @XmlJavaTypeAdapter(ObjectIdJaxbAdapter.class)
+    //@XmlJavaTypeAdapter(ObjectIdJaxbAdapter.class)
     private ObjectId _id;
 
     @Indexed(name = "index", unique = true)

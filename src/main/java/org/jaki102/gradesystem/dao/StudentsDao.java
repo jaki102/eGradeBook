@@ -24,8 +24,14 @@ public class StudentsDao {
         final UpdateOperations<Student> updateOperations = datastore.createUpdateOperations(Student.class)
                 .set("index", updateObject.getIndex())
                 .set("firstName", updateObject.getFirstName())
-                .set("lastName", updateObject.getLastName())
-                .set("birthday", updateObject.getBirthday());
+                .set("lastName", updateObject.getLastName());
+            //    .set("birthday", updateObject.getBirthday());
+
+        if(updateObject.getBirthday() == null){
+            updateOperations.unset("birthday");
+        } else {
+            updateOperations.set("birthday", updateObject.getBirthday());
+        }
         if(updateObject.getGrades() != null && !updateObject.getGrades().isEmpty())
             updateOperations.set("grades", updateObject.getGrades());
         datastore.update(studentToUpdate, updateOperations);
