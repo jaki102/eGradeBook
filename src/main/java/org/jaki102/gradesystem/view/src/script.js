@@ -281,17 +281,32 @@ class GradeSearch extends Grade{
             url: "http://localhost:8080/myapp/students/"+this.student+"/grades/?" + this.getSearchParametersString(),
             method: "GET",
             async: false,
+            dataType: "json",
             headers: {
                 Accept: "application/json",
                 "Content-Type": "application/json"
             },
         }).responseText);
-        console.log("value="+ko.toJS(this.value)+"&date="+ko.toJS(this.date));
+        console.log("value="+ko.toJS(this.value)+"&date="+ko.toJS(this.date)+"&courseName="+ko.toJS(this.course));
         ko.mapping.fromJS(grades,mapping,this.gradesObservableArray);
     }
-
     getSearchParametersString(){
-        return "value="+ko.toJS(this.value)+"&date="+ko.toJS(this.date);
+        if(this.value() != "" && this.date() != ""&& this.course() != ""){
+            return "value=" + ko.toJS(this.value) + "&date=" + ko.toJS(this.date) +"&courseName="+ko.toJS(this.course);
+        }  else if(this.value() != "" && this.date() != ""){
+            return "value=" + ko.toJS(this.value) + "&date=" + ko.toJS(this.date);
+        }else if(this.course() != "" && this.date() != ""){
+            return "course=" + ko.toJS(this.course) + "&date=" + ko.toJS(this.date);
+        }else if(this.course() != "" && this.value() != ""){
+            return "value=" + ko.toJS(this.value) + "&course=" + ko.toJS(this.course);
+        }else if(this.date() != ""){
+            return "date=" + ko.toJS(this.date);
+        }else if(this.course() != ""){
+            return "courseName=" + ko.toJS(this.course);
+        }else if(this.value() != ""){
+            return "value=" + ko.toJS(this.value);
+       // return "value=" + ko.toJS(this.value) + "&courseName=" + ko.toJS(this.course) + "&date=" + ko.toJS(this.date);
+    }
     }
 }
 var viewModel = function(){
